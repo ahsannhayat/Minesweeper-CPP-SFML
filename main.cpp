@@ -5,8 +5,8 @@
 #include <fstream>              // for file handling
 #include <cassert>              // for assert()
 
-using namespace sf;             // required to use SFML library
-using namespace std;
+using namespace sf;             // required to use SFML library (sf = simple and fast multimedia library)
+using namespace std;            // required to use standard C++ library (std = standard)
 
 // Structure to hold player statistics
 struct Player
@@ -31,7 +31,7 @@ void saveStats(Player p)
 }
 
 // Function to load player statistics from a file
-Player loadStats()
+Player loadStats()   //function of data type Player to return a Player structure
 {
     Player p;
     ifstream fin("stats.txt");  // Opens file to READ
@@ -63,17 +63,17 @@ void openEmpty(int x, int y, int grid[12][12], int sgrid[12][12])
         return;
 
     // If cell is already opened or flagged, stop recursion
-    if (sgrid[x][y] != 10)
+    if (sgrid[x][y] != 10)  // 10 represents hidden tile
         return;
 
     // Reveal the current cell
-    sgrid[x][y] = grid[x][y];
+    sgrid[x][y] = grid[x][y];  // sgrid hold what player sees and grid hold actual data
 
     // If the revealed cell is empty (0), open surrounding cells
     if (grid[x][y] == 0)
-    {
-        openEmpty(x + 1, y, grid, sgrid);
-        openEmpty(x - 1, y, grid, sgrid);
+    { //
+        openEmpty(x + 1, y, grid, sgrid);  // recursively open all 8 directions
+        openEmpty(x - 1, y, grid, sgrid);  
         openEmpty(x, y + 1, grid, sgrid);
         openEmpty(x, y - 1, grid, sgrid);
         openEmpty(x + 1, y + 1, grid, sgrid);
@@ -88,21 +88,25 @@ void openEmpty(int x, int y, int grid[12][12], int sgrid[12][12])
 void runGame()
 {
     const int gridSize = 12;     // 12 x 12 grid (extra border for safety)
-    const int tileSize = 32;     // Size of each tile in pixels
+    const int tileSize = 32;     // Size of each tile in pixels (one tile contains 32x32 pixels)
     const int windowSize = 10 * tileSize; // Game window size
 
+    // this function creates the main game window
+    // Type variableName(Argument1, Argument2);
     RenderWindow game(VideoMode(windowSize, windowSize), "SFML Minesweeper");
-
+    
     Texture tileTexture;         // Texture object to load image
-    if (!tileTexture.loadFromFile("tiles.jpg"))
+
+    if (!tileTexture.loadFromFile("tiles.jpg")) //.loadFromFile loads an image from file into the texture
     {
         cout << "Error loading tiles.jpg" << endl;
-        system("pause");
-        return;                 // Exit game if image is missing
+        system("pause");         // takes a little pause so user can read error message
+        return;                  // Exit game if image is missing
     }
 
     Sprite tile(tileTexture);    // Sprite object used to draw tiles
 
+     // = {0} initializes all elements to zero
     int grid[gridSize][gridSize] = {0};   // Actual game data (mines & numbers)
     int sgrid[gridSize][gridSize] = {0};  // What the player sees
 
@@ -111,7 +115,8 @@ void runGame()
         for (int j = 1; j <= 10; j++)
         {
             sgrid[i][j] = 10;             // 10 represents hidden tile
-            grid[i][j] = (rand() % 5 == 0) ? 9 : 0; // 20% chance of mine
+            grid[i][j] = (rand() % 5 == 0) ? 9 : 0; // 20% chance of mine (ternary operator)
+            // 9 represents a mine, 0 represents empty cell
         }
 
     // Calculate numbers for non-mine cells
@@ -125,35 +130,35 @@ void runGame()
 
             for (int dx = -1; dx <= 1; dx++)
                 for (int dy = -1; dy <= 1; dy++)
-                    if (grid[i + dx][j + dy] == 9)
-                        count++;
+                    if (grid[i + dx][j + dy] == 9)   // Check all 8 neighbors
+                        count++;   // if mine found in neighbor, increment count
 
-            grid[i][j] = count;            // Store number of nearby mines
+            grid[i][j] = count;    // Store number of nearby mines
         }
 
-    bool gameOver = false;                 // Flag to stop game after mine click
+    bool gameOver = false;         // Flag to stop game after mine click
 
     // Main SFML game loop
     while (game.isOpen())
     {
-        Event event;
-        while (game.pollEvent(event))
+        Event event;    // Event object to capture user input
+        while (game.pollEvent(event))  // Polling events (like mouse clicks, window close, etc.)
         {
             // Close the window
-            if (event.type == Event::Closed)
+            if (event.type == Event::Closed) // if "X" button is clicked, then close the window 
                 game.close();
 
             // Handle mouse input only if game is not over
             if (event.type == Event::MouseButtonPressed && !gameOver)
             {
-                int x = event.mouseButton.x / tileSize;
-                int y = event.mouseButton.y / tileSize;
+                int x = event.mouseButton.x / tileSize;  // event.mouseButton.x gives pixel position of mouse click for x
+                int y = event.mouseButton.y / tileSize; // event.mouseButton.y gives pixel position of mouse click for y
 
                 // Ensure click is inside playable grid
                 if (x >= 0 && x < 10 && y >= 0 && y < 10)
                 {
-                    int gx = x + 1;
-                    int gy = y + 1;
+                    int gx = x + 1;  // skipping border
+                    int gy = y + 1;  // because our grid starts from 1 to 10
 
                     // Left mouse click reveals tile
                     if (event.mouseButton.button == Mouse::Left)
@@ -179,9 +184,9 @@ void runGame()
                     // Right mouse click places or removes a flag
                     if (event.mouseButton.button == Mouse::Right)
                     {
-                        if (sgrid[gx][gy] == 10)
+                        if (sgrid[gx][gy] == 10) // 10 represents hidden tile
                             sgrid[gx][gy] = 11; // Place flag
-                        else if (sgrid[gx][gy] == 11)
+                        else if (sgrid[gx][gy] == 11)  // 11 represents flagged tile
                             sgrid[gx][gy] = 10; // Remove flag
                     }
                 }
@@ -194,9 +199,15 @@ void runGame()
         for (int i = 1; i <= 10; i++)
             for (int j = 1; j <= 10; j++)
             {
-                tile.setTextureRect(
-                    IntRect(sgrid[i][j] * tileSize, 0, tileSize, tileSize));
-                tile.setPosition((i - 1) * tileSize, (j - 1) * tileSize);
+                // .setTextureRect selects which part of the image to use for the sprite
+                // IntRect is a rectangle defined by (left, top, width, height)
+                // Example: IntRect(0, 0, 32, 32)
+                // (start X pixels from the left edge, Start 0 pixels from the top edge, Make the box 32 pixels wide, Make the box 32 pixels tall)
+                // * tileSize gives the correct position in the tileset image (in pixels)
+                tile.setTextureRect(IntRect(sgrid[i][j] * tileSize, 0, tileSize, tileSize));
+
+                // Set position of the tile in the window
+                tile.setPosition((i - 1) * tileSize, (j - 1) * tileSize); // (i-1) and (j-1) to adjust for border offset
                 game.draw(tile);
             }
 
@@ -212,7 +223,7 @@ int main()
     // Terminal menu loop
     while (true)
     {
-        system("cls");
+        system("cls");   // Clear the console screen
         cout << "===========================\n";
         cout << "   MINESWEEPER ULTIMATE\n";
         cout << "===========================\n";
