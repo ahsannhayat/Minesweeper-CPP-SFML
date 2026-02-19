@@ -1,63 +1,24 @@
+# Minesweeper Replica (C++ & SFML) 💣
 
-# Minesweeper Game (BSCS Semester 1 Project)
+A fully playable replica of the classic Minesweeper game, built using **C++** and the **SFML** (Simple and Fast Multimedia Library). This was developed as a final project for my 1st-semester Object-Oriented Programming course.
 
-This project is a simple implementation of the classic **Minesweeper** game.
-It is being developed as our **1st semester BSCS project**, using **C++** and **SFML** for graphics.
+## 🎮 How to Play
+You don't need to compile the code to play! 
+1. Go to the **[Releases](../../releases)** tab on the right side of this page.
+2. Download the `Minesweeper_Game.zip` file.
+3. **Extract (Unzip)** the folder to your PC.
+4. Run the `.exe` file and enjoy!
 
-## Features (Planned)
+## 🕹️ Controls
+* **Left Click:** Reveal a tile.
+* **Right Click:** Place a flag on a suspected mine.
 
-* Classic Minesweeper grid
-* Left-click to reveal cells
-* Right-click to place flags
-* Timer and mine counter
-* Simple UI using SFML
-* Win/Lose system
-
-## Tech Stack
-
+## 🛠️ Built With
 * **Language:** C++
-* **Graphics Library:** SFML
-* **IDE (optional):** VS Code / Visual Studio
+* **Graphics & Audio:** SFML 2.6
+* **Build System:** CMake
 
-## How to Run (Will be added later)
-
-This section will be updated once the project structure is ready.
-
-Expected steps:
-
-1. Install SFML
-2. Clone this repository
-3. Build and run the project (using CMake or IDE build tools)
-
-## Project Structure (Will grow over time)
-
-```
-/src
-    main.cpp
-    game/
-        board.cpp
-        board.hpp
-        cell.cpp
-        cell.hpp
-assets/
-README.md
-```
-
-## Contributing
-
-1. Create a new branch for each feature
-2. Commit regularly with clear, meaningful messages
-3. Submit pull requests before merging
-4. Don’t push broken code to main
-
-## Team Members
-
-* **Ahsan Hayat**
-* **Hassan Farooq**
-* **Fahad Zubair**
-
-## License
-
-For academic use only.
-
----
+## 💡 Features
+* Classic Minesweeper grid logic and recursive empty-tile clearing.
+* Custom visual assets and tile textures.
+* Integrated sound effects for clicking, winning, and explosions.
